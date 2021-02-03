@@ -1,7 +1,10 @@
 <template>
   <div>
     <h1>Hello world!</h1>
-    <input type="text" v-model="searchText" @input="onSearch">
+    <input type="text" v-model="searchText" @input="onSearch" list="suggests">
+    <datalist id="suggests">
+      <option :value="suggest.suggestion" v-for="(suggest, index) in suggests" :key="index"></option>
+    </datalist>
     <hr>
     <div v-for="result in results" :key="result.id">
       <h2>{{ result.title }}</h2>
@@ -21,7 +24,8 @@ export default {
     return {
       minisearch: null,
       searchText: '',
-      results: []
+      results: [],
+      suggests: []
     }
   },
   created () {
@@ -34,8 +38,8 @@ export default {
   },
   methods: {
     onSearch () {
+      this.suggests = this.minisearch.autoSuggest(this.searchText)
       this.results = this.minisearch.search(this.searchText)
-      console.log(this.results)
     }
   }
 }
@@ -56,5 +60,9 @@ li {
 }
 a {
   color: #42b983;
+}
+
+input::-webkit-calendar-picker-indicator {
+  display: none;
 }
 </style>
